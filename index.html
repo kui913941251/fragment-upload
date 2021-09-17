@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <script src="./constant.js"></script>
+    <script src="./utils.js"></script>
+    <script src="./index.js"></script>
+    <style> 
+      .trigger {
+        width: 200px;
+        height: 100px;
+        border: 1px solid #666;
+      }
+    </style>
+  </head>
+  <body>
+    <button onclick="handleClick()">点击</button>
+    <div class="trigger"></div>
+
+    <script>
+      let upload = new Uploader({
+        trigger: ".trigger",
+        multiple: true,
+        accept: ".png",
+        dragable: true,
+        useSplit: true
+      });
+
+      let upload2 = new Uploader()
+
+      console.log(upload === upload2)
+
+      upload2.on("beforeChange", (file, next) => {
+        if (file) {
+          next()
+        }
+        console.log("beforeChange")
+      }).on("change", (file, fileList) => {
+        console.log("change")
+        upload.start(file)
+      }).on("uploading", (file, chunkFile, next) => {
+        console.log("uploading")
+        setTimeout(() => {
+          next()
+        }, 2000)
+      }).on("finish", (file) => {
+        console.log(file)
+        console.log("merge")
+        upload.destroy()
+      })
+
+      console.log(upload)
+
+      function handleClick() {
+        upload.click();
+      }
+    </script>
+  </body>
+</html>
